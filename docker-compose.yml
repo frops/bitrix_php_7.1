@@ -1,0 +1,35 @@
+version: '3'
+services:
+
+    nginx:
+        image: nginx
+        container_name: frops_nginx
+        volumes:
+            - ./:/app
+            - ./configs/nginx.conf:/etc/nginx/nginx.conf
+        ports:
+            - 80:80
+        links:
+            - web
+        restart: always
+
+    web:
+        build: .
+        container_name: frops_web
+        volumes:
+            - ./:/app
+        ports:
+            - 80
+        env_file:
+            - configs/.env
+        links:
+            - db
+        restart: always
+    db:
+        image: mysql
+        container_name: frops_db
+        ports:
+            - 3306
+        env_file:
+            - configs/.env.mysql
+        restart: always
